@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Analyze Change{% endblock %}
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner" style="max-width:900px;display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header anim-fade-up">
+    <div><div class="ci-page-eyebrow">Change proposal · ecommerce-backend @ main</div><h1 class="ci-page-title">ANALYZE A CHANGE</h1><p class="ci-page-sub">Describe the change in plain language. Change Impact simulates it against the current architecture — nothing is modified.</p></div>
+  </div>
+
+  {# describe panel #}
+  <div class="ci-panel">
+    <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">What do you want to change?</span><span class="ci-badge badge-gray">PLAIN LANGUAGE</span></div></div>
+    <div style="padding:16px;" id="ci-analyze-form">
+      <textarea id="ci-change-textarea" rows="4" spellcheck="false" placeholder="Add Google Login while keeping the existing authentication system." class="ci-textarea mono" style="font-size:13px;line-height:1.625;resize:vertical;">{{ initial_change }}</textarea>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="ci-enhance-btn" class="ci-btn ci-btn-ghost" style="height:34px;" {% if not initial_change %}disabled{% endif %}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+            ENHANCE CHANGE
+          </button>
+          <button id="ci-analyze-btn" class="ci-btn ci-btn-primary" style="height:34px;" {% if not initial_change %}disabled{% endif %}>
+            ANALYZE
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+        <span class="mono ci-text-3" style="font-size:9.5px;" id="ci-char-count">{{ initial_change|length }} CHARS · SIMULATION ONLY</span>
+      </div>
+    </div>
+  </div>
+
+  {# questions panel #}
+  <div class="ci-panel anim-fade-up" id="ci-questions-panel" style="display:none;">
+    <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">Enhancement — a few questions first</span><span class="ci-badge badge-amber">6 QUESTIONS</span></div></div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+      {% for q in enhance_questions %}
+      <button class="ci-question-toggle" style="width:100%;text-align:left;padding:12px 14px;border-radius:5px;background:var(--panel-2);border:1px solid color-mix(in srgb,var(--green) 30%,transparent);cursor:pointer;font-family:inherit;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span style="font-size:12.5px;font-weight:500;flex:1;">{{ q.q }}</span>
+          <span class="ci-toggle ci-question-tog on" style="pointer-events:none;"><span class="ci-toggle-thumb"></span></span>
+        </div>
+        <div class="ci-question-answer" style="margin-top:6px;margin-left:22px;font-size:11px;color:var(--text-2);">{{ q.a }}</div>
+      </button>
+      {% endfor %}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;">
+        <span class="mono ci-text-3" style="font-size:9.5px;">6/6 CONSTRAINTS ACCEPTED</span>
+        <button id="ci-generate-btn" class="ci-btn ci-btn-primary" style="height:34px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          GENERATE ENHANCED SPECIFICATION
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {# spec panel #}
+  <div class="ci-panel anim-fade-up" id="ci-spec-panel" style="display:none;">
+    <div class="ci-panel-header">
+      <div class="ci-panel-header-left"><span class="ci-panel-title">Enhanced Change Specification</span><span class="ci-badge badge-green"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> READY</span></div>
+      <span class="mono ci-text-3" style="font-size:9px;">DERIVED FROM 6 CONSTRAINTS</span>
+    </div>
+    <div style="padding:16px;">
+      <div style="border-radius:5px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.9;color:var(--text-2);background:var(--bg-1);border:1px solid var(--border);">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" style="display:inline;margin-right:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span id="ci-enhanced-spec">{{ enhanced_spec }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
+        {% for kv in spec_meta %}<div style="background:var(--panel-2);border-radius:5px;padding:8px 12px;border:1px solid var(--border);"><div class="mono ci-text-3" style="font-size:8.5px;letter-spacing:.12em;">{{ kv.k }}</div><div style="font-size:11.5px;font-weight:500;margin-top:2px;">{{ kv.v }}</div></div>{% endfor %}
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
+        <button class="ci-btn ci-btn-ghost" onclick="document.getElementById('ci-spec-panel').style.display='none';document.getElementById('ci-questions-panel').style.display='';">← Adjust answers</button>
+        <button id="ci-spec-analyze-btn" class="ci-btn ci-btn-primary" style="height:36px;padding:0 20px;">ANALYZE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+window.CI_ENHANCED_SPEC = "{{ enhanced_spec|escapejs }}";
+</script>
+{% endblock %}

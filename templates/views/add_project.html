@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Add Project{% endblock %}
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner">
+  <div class="ci-page-header anim-fade-up" style="margin-bottom:24px;">
+    <div class="ci-page-header-left">
+      <div class="ci-page-eyebrow">New Workspace</div>
+      <h1 class="ci-page-title">ADD PROJECT</h1>
+      <p class="ci-page-sub">Connect a codebase to build its architecture map. All methods lead to the same analysis flow.</p>
+    </div>
+  </div>
+
+  <div style="display:grid;gap:16px;" class="lg:grid-cols-3">
+
+    {# ── upload zip ── #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">Upload ZIP</span><span class="ci-badge badge-gray">LOCAL</span></div></div>
+      <div style="padding:16px;">
+        <div id="ci-drop-zone" style="border:1.5px dashed var(--border-2);background:var(--panel-2);border-radius:6px;padding:32px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;">
+          <input id="ci-file-input" type="file" accept=".zip" style="display:none;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          <div style="font-size:12.5px;font-weight:500;" id="ci-file-label">Drop project archive here</div>
+          <div class="ci-text-3" style="font-size:11px;">or click to browse — .zip up to 250 MB</div>
+        </div>
+        <a href="/analysis/" id="ci-upload-btn" class="ci-btn ci-btn-primary" style="width:100%;justify-content:center;margin-top:16px;display:flex;pointer-events:none;opacity:.45;" onclick="event.preventDefault();window.location.href='/analysis/';">
+          Analyze upload
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <p class="mono ci-text-3" style="font-size:9.5px;text-align:center;margin-top:10px;">SAMPLE: ECOMMERCE-BACKEND.ZIP · 126 FILES</p>
+      </div>
+    </div>
+
+    {# ── github url ── #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">GitHub Repository</span><span class="ci-badge badge-gray">URL</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;min-height:232px;">
+        <label class="ci-label">Repository URL</label>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--panel-2);border-radius:5px;padding-left:10px;padding-right:4px;border:1px solid var(--border-2);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <input id="ci-repo-url" value="https://github.com/acme/ecommerce-backend" placeholder="https://github.com/user/project" class="mono" style="flex:1;background:transparent;border:none;outline:none;height:34px;font-size:11.5px;color:var(--text-1);">
+          <svg id="ci-url-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--text-2);">
+          <div style="display:flex;align-items:center;gap:8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Public repositories analyzed read-only</div>
+          <div style="display:flex;align-items:center;gap:8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Full history &amp; branch support</div>
+          <div style="display:flex;align-items:center;gap:8px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Auto-detects language &amp; framework</div>
+        </div>
+        <a href="/analysis/" id="ci-url-analyze-btn" class="ci-btn ci-btn-primary" style="width:100%;justify-content:center;margin-top:auto;display:flex;">
+          ANALYZE REPOSITORY
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+
+    {# ── connect github ── #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">Connect GitHub</span><span class="ci-badge badge-gray">OAUTH</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;min-height:232px;">
+        {# pre-auth #}
+        <div id="ci-github-pre-auth" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:16px 0;">
+          <span style="width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--panel-3);border:1px solid var(--border-2);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          </span>
+          <div>
+            <div style="font-size:12.5px;font-weight:500;">Authorize Change Impact</div>
+            <div class="ci-text-3" style="font-size:11px;margin-top:4px;max-width:210px;">Read-only access to repositories. You can choose exactly which repos are visible.</div>
+          </div>
+        </div>
+        <button id="ci-github-auth-btn" class="ci-btn" style="width:100%;justify-content:center;height:34px;background:var(--text-1);color:var(--bg-0);border-color:var(--text-1);font-weight:650;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          Authorize with GitHub
+        </button>
+        {# post-auth #}
+        <div id="ci-github-post-auth" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            <div><label class="ci-label">Repository</label>
+              <select id="ci-repo-select" class="ci-select">
+                <option>ecommerce-backend</option><option>portfolio-api</option><option>payment-service</option>
+              </select>
+            </div>
+            <div><label class="ci-label">Branch</label>
+              <select class="ci-select"><option>main</option><option>develop</option><option>feature/google-oauth</option></select>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+            {% for repo in mock_repos %}<button class="ci-repo-card" data-repo="{{ repo.name }}" style="width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:5px;text-align:left;transition:all .14s;border:1px solid var(--border);background:var(--panel-2);cursor:pointer;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              <div style="min-width:0;flex:1;">
+                <div style="font-size:11.5px;font-weight:500;">{{ repo.name }}</div>
+                <div class="mono ci-text-3" style="font-size:9px;">{{ repo.lang }} · {{ repo.size }}</div>
+              </div>
+              <svg class="ci-repo-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="display:none;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </button>{% endfor %}
+          </div>
+          <a href="/analysis/" class="ci-btn ci-btn-primary" style="width:100%;justify-content:center;display:flex;">Analyze ecommerce-backend <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# pipeline strip #}
+  <div class="ci-panel" style="margin-top:24px;padding:14px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <span class="mono ci-text-3" style="font-size:10px;font-weight:600;letter-spacing:.14em;">PIPELINE</span>
+    {% for step in pipeline_steps %}
+    <span style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-2);">
+      <span style="width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:8px;font-weight:700;background:var(--panel-3);border:1px solid var(--border-2);color:var(--text-3);">{{ forloop.counter }}</span>
+      {{ step }}{% if not forloop.last %}<span class="ci-text-3" style="margin-left:8px;">→</span>{% endif %}
+    </span>
+    {% endfor %}
+    <span class="mono ci-text-3" style="font-size:9.5px;margin-left:auto;display:flex;align-items:center;gap:6px;">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+      BASE: MAIN
+    </span>
+  </div>
+</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  window.CI_MOCK_REPOS = [
+    {name:"ecommerce-backend",lang:"Python · Flask",size:"126 files"},
+    {name:"portfolio-api",lang:"TypeScript · Fastify",size:"54 files"},
+    {name:"payment-service",lang:"Python · Django",size:"88 files"},
+  ];
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load ci_tags %}
+<div style="max-width:1100px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header"><div><div class="ci-page-eyebrow">Project · static + dependency analysis</div><h1 class="ci-page-title">SECURITY</h1><p class="ci-page-sub">Findings from the last full analysis of main.</p></div></div>
+  <div style="display:grid;gap:16px;" class="lg:grid-cols-insight">
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">Security posture</span></div></div>
+      <div class="ci-panel-body" style="display:flex;flex-direction:column;align-items:center;padding-top:8px;">
+        {# Score ring rendered inline #}
+        {% with s=security r=58 circ=364.42 %}
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="58" fill="none" stroke="var(--panel-3)" stroke-width="7"/>
+            <circle cx="70" cy="70" r="58" fill="none" stroke="var(--amber)" stroke-width="7"
+              stroke-linecap="round" stroke-dasharray="364.42"
+              stroke-dashoffset="{% widthratio security.score 100 364 %}"
+              style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1.2s cubic-bezier(.22,.9,.3,1);"/>
+            <text x="50%" y="47%" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="700" font-family="JetBrains Mono,monospace" fill="var(--amber)">{{ security.score }}</text>
+            <text x="50%" y="62%" text-anchor="middle" font-size="9.5" font-family="JetBrains Mono,monospace" fill="var(--text-3)">/ 100</text>
+          </svg>
+          <span class="mono ci-text-2" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;">Security score</span>
+        </div>
+        {% endwith %}
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-top:20px;">
+          <div style="border-radius:5px;padding:10px;text-align:center;background:var(--red-dim);"><div class="mono" style="font-size:17px;font-weight:700;color:var(--red);">{{ security.high }}</div><div class="mono" style="font-size:9px;text-transform:uppercase;color:var(--red);">High</div></div>
+          <div style="border-radius:5px;padding:10px;text-align:center;background:var(--amber-dim);"><div class="mono" style="font-size:17px;font-weight:700;color:var(--amber);">{{ security.medium }}</div><div class="mono" style="font-size:9px;text-transform:uppercase;color:var(--amber);">Medium</div></div>
+          <div style="border-radius:5px;padding:10px;text-align:center;background:var(--blue-dim);"><div class="mono" style="font-size:17px;font-weight:700;color:var(--blue);">{{ security.low }}</div><div class="mono" style="font-size:9px;text-transform:uppercase;color:var(--blue);">Low</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">{{ security.findings|length }} findings · click to inspect</span></div></div>
+      <div class="ci-sec-list">
+        {% for f in security.findings %}
+        <div style="border-bottom:1px solid var(--border);">
+          <button class="ci-sec-accordion" style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;text-align:left;background:transparent;border:none;cursor:pointer;font-family:inherit;" onclick="this.closest('div').querySelector('.ci-sec-body').style.display=this.closest('div').querySelector('.ci-sec-body').style.display==='none'?'':'none';this.querySelector('.ci-chevron').style.transform=this.closest('div').querySelector('.ci-sec-body').style.display===''?'rotate(180deg)':'rotate(0deg)';">
+            <span class="ci-badge {{ f.severity|severity_badge_class }}">{{ f.severity }}</span>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:12.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ f.title }}</div>
+              <div class="mono ci-text-3" style="font-size:9.5px;">{{ f.id }} · {{ f.area }}</div>
+            </div>
+            <svg class="ci-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" style="transition:transform .15s;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="ci-sec-body" style="padding:0 16px 14px 52px;display:none;">
+            <p style="font-size:11.5px;line-height:1.625;color:var(--text-2);margin:0;max-width:520px;">{{ f.detail }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

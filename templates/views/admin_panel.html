@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner-wide">
+
+  {# ── Page header ── #}
+  <div class="ci-page-header" style="margin-bottom:28px;">
+    <div class="ci-page-header-left">
+      <div class="ci-page-eyebrow">Master Control</div>
+      <h1 class="ci-page-title" style="display:flex;align-items:center;gap:10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+          <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+          <path d="M12 8v4l3 3"/>
+          <circle cx="12" cy="12" r="1" fill="var(--blue)"/>
+        </svg>
+        Admin Panel
+      </h1>
+      <div class="ci-page-sub">Signed in as <span style="color:var(--blue);font-weight:600;">{{ request.user.username }}</span> · Superuser access</div>
+    </div>
+    <div class="ci-page-actions">
+      <span class="ci-badge badge-red" style="font-size:10px;height:22px;padding:0 10px;">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        SUPERUSER ONLY
+      </span>
+    </div>
+  </div>
+
+  {# ── Stats row ── #}
+  <div class="grid grid-cols-4 sm\:grid-cols-4 gap-3" style="margin-bottom:28px;">
+
+    <div class="ci-stat" style="border-color:color-mix(in srgb,var(--blue) 30%,var(--border));">
+      <div class="ci-stat-label">Users</div>
+      <div class="ci-stat-value" style="color:var(--blue);">{{ stats.users }}</div>
+      <div class="ci-stat-sub">registered accounts</div>
+    </div>
+
+    <div class="ci-stat" style="border-color:color-mix(in srgb,var(--green) 30%,var(--border));">
+      <div class="ci-stat-label">Projects</div>
+      <div class="ci-stat-value" style="color:var(--green);">{{ stats.projects }}</div>
+      <div class="ci-stat-sub">connected repos</div>
+    </div>
+
+    <div class="ci-stat" style="border-color:color-mix(in srgb,var(--amber) 30%,var(--border));">
+      <div class="ci-stat-label">Analyses</div>
+      <div class="ci-stat-value" style="color:var(--amber);">{{ stats.analyses }}</div>
+      <div class="ci-stat-sub">change simulations</div>
+    </div>
+
+    <div class="ci-stat" style="border-color:color-mix(in srgb,var(--violet) 30%,var(--border));">
+      <div class="ci-stat-label">Graph Nodes</div>
+      <div class="ci-stat-value" style="color:var(--violet);">{{ stats.nodes }}</div>
+      <div class="ci-stat-sub">{{ stats.edges }} edges</div>
+    </div>
+
+    <div class="ci-stat">
+      <div class="ci-stat-label">Security Findings</div>
+      <div class="ci-stat-value" style="color:var(--red);">{{ stats.security }}</div>
+      <div class="ci-stat-sub">across all projects</div>
+    </div>
+
+    <div class="ci-stat">
+      <div class="ci-stat-label">Dependencies</div>
+      <div class="ci-stat-value">{{ stats.deps }}</div>
+      <div class="ci-stat-sub">tracked packages</div>
+    </div>
+
+    <div class="ci-stat">
+      <div class="ci-stat-label">Env Variables</div>
+      <div class="ci-stat-value" style="color:var(--teal);">{{ stats.env_vars }}</div>
+      <div class="ci-stat-sub">environment entries</div>
+    </div>
+
+    <div class="ci-stat" style="background:var(--panel-2);">
+      <div class="ci-stat-label">DB Models</div>
+      <div class="ci-stat-value" style="color:var(--text-2);">7</div>
+      <div class="ci-stat-sub">registered models</div>
+    </div>
+
+  </div>
+
+  {# ── Tabs ── #}
+  <div style="border-bottom:1px solid var(--border);margin-bottom:24px;display:flex;gap:0;" id="admin-tabs">
+    <button class="ci-tab active" data-tab="users" onclick="switchTab('users',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Users
+      <span class="ci-badge badge-blue" style="font-size:9px;height:16px;padding:0 5px;">{{ stats.users }}</span>
+    </button>
+    <button class="ci-tab" data-tab="projects" onclick="switchTab('projects',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Projects
+      <span class="ci-badge badge-green" style="font-size:9px;height:16px;padding:0 5px;">{{ stats.projects }}</span>
+    </button>
+    <button class="ci-tab" data-tab="analyses" onclick="switchTab('analyses',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Analyses
+      <span class="ci-badge badge-amber" style="font-size:9px;height:16px;padding:0 5px;">{{ stats.analyses }}</span>
+    </button>
+  </div>
+
+  {# ══════════════ USERS TAB ══════════════ #}
+  <div id="tab-users">
+    <div class="ci-panel" style="overflow:hidden;">
+      <div class="ci-panel-header">
+        <div class="ci-panel-header-left">
+          <span class="ci-panel-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Registered Users
+          </span>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th class="ci-th">Username</th>
+              <th class="ci-th">Email</th>
+              <th class="ci-th">Joined</th>
+              <th class="ci-th">Last Login</th>
+              <th class="ci-th">Staff</th>
+              <th class="ci-th">Superuser</th>
+              <th class="ci-th" style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr class="ci-row-hover">
+              <td class="ci-td">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;">
+                    {{ u.username|slice:":1"|upper }}
+                  </span>
+                  <span style="font-weight:600;color:var(--text-1);">{{ u.username }}</span>
+                  {% if u == request.user %}
+                  <span class="ci-badge badge-blue" style="font-size:8px;height:14px;padding:0 4px;">YOU</span>
+                  {% endif %}
+                </div>
+              </td>
+              <td class="ci-td ci-text-2" style="font-size:12px;">{{ u.email|default:"—" }}</td>
+              <td class="ci-td mono ci-text-3" style="font-size:11px;">{{ u.date_joined|date:"M d, Y" }}</td>
+              <td class="ci-td mono ci-text-3" style="font-size:11px;">{{ u.last_login|date:"M d, Y H:i"|default:"Never" }}</td>
+              <td class="ci-td">
+                {% if u.is_staff %}
+                  <span class="ci-badge badge-green" style="font-size:9px;">YES</span>
+                {% else %}
+                  <span class="ci-badge badge-gray" style="font-size:9px;">NO</span>
+                {% endif %}
+              </td>
+              <td class="ci-td">
+                {% if u.is_superuser %}
+                  <span class="ci-badge badge-violet" style="font-size:9px;">YES</span>
+                {% else %}
+                  <span class="ci-badge badge-gray" style="font-size:9px;">NO</span>
+                {% endif %}
+              </td>
+              <td class="ci-td" style="text-align:right;">
+                <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
+                  {% if u != request.user %}
+                  {# Toggle staff #}
+                  <form method="post" style="margin:0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle_staff">
+                    <input type="hidden" name="user_id" value="{{ u.pk }}">
+                    <button type="submit" class="ci-btn ci-btn-ghost" style="height:26px;padding:0 8px;font-size:10px;" title="Toggle staff">
+                      {% if u.is_staff %}Remove Staff{% else %}Make Staff{% endif %}
+                    </button>
+                  </form>
+                  {# Delete #}
+                  <form method="post" style="margin:0;" onsubmit="return confirm('Delete user {{ u.username }}? This cannot be undone.');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_user">
+                    <input type="hidden" name="user_id" value="{{ u.pk }}">
+                    <button type="submit" class="ci-btn ci-btn-danger" style="height:26px;padding:0 8px;font-size:10px;">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                      Delete
+                    </button>
+                  </form>
+                  {% else %}
+                  <span class="ci-text-3" style="font-size:11px;font-style:italic;">current session</span>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="ci-td" style="text-align:center;padding:32px;color:var(--text-3);">No users found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# ══════════════ PROJECTS TAB ══════════════ #}
+  <div id="tab-projects" style="display:none;">
+    <div class="ci-panel" style="overflow:hidden;">
+      <div class="ci-panel-header">
+        <div class="ci-panel-header-left">
+          <span class="ci-panel-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            All Projects
+          </span>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th class="ci-th">Project</th>
+              <th class="ci-th">Branch</th>
+              <th class="ci-th">Language</th>
+              <th class="ci-th">Files</th>
+              <th class="ci-th">Health</th>
+              <th class="ci-th">Owner</th>
+              <th class="ci-th">Created</th>
+              <th class="ci-th" style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in projects %}
+            <tr class="ci-row-hover">
+              <td class="ci-td">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="width:24px;height:24px;border-radius:5px;background:var(--panel-3);border:1px solid var(--border-2);display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--teal);flex-shrink:0;">
+                    {{ p.name|slice:":1"|upper }}
+                  </span>
+                  <span style="font-weight:600;color:var(--text-1);">{{ p.name }}</span>
+                </div>
+              </td>
+              <td class="ci-td">
+                <span class="ci-badge badge-gray mono" style="font-size:9px;">{{ p.branch }}</span>
+              </td>
+              <td class="ci-td ci-text-2" style="font-size:12px;">{{ p.language|default:"—" }}</td>
+              <td class="ci-td mono" style="font-size:12px;color:var(--text-2);">{{ p.stat_files }}</td>
+              <td class="ci-td">
+                {% if p.health_project >= 75 %}
+                  <span style="color:var(--green);font-weight:700;font-size:12px;">{{ p.health_project }}/100</span>
+                {% elif p.health_project >= 50 %}
+                  <span style="color:var(--amber);font-weight:700;font-size:12px;">{{ p.health_project }}/100</span>
+                {% else %}
+                  <span style="color:var(--red);font-weight:700;font-size:12px;">{{ p.health_project }}/100</span>
+                {% endif %}
+              </td>
+              <td class="ci-td ci-text-2" style="font-size:12px;">{{ p.owner.username|default:"—" }}</td>
+              <td class="ci-td mono ci-text-3" style="font-size:11px;">{{ p.created_at|date:"M d, Y" }}</td>
+              <td class="ci-td" style="text-align:right;">
+                <form method="post" style="margin:0;" onsubmit="return confirm('Delete project {{ p.name }}? All related data will be removed.');">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete_project">
+                  <input type="hidden" name="project_id" value="{{ p.pk }}">
+                  <button type="submit" class="ci-btn ci-btn-danger" style="height:26px;padding:0 8px;font-size:10px;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="ci-td" style="text-align:center;padding:32px;color:var(--text-3);">No projects in database.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# ══════════════ ANALYSES TAB ══════════════ #}
+  <div id="tab-analyses" style="display:none;">
+    <div class="ci-panel" style="overflow:hidden;">
+      <div class="ci-panel-header">
+        <div class="ci-panel-header-left">
+          <span class="ci-panel-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Recent Analyses <span class="ci-text-3" style="font-weight:400;">(last 20)</span>
+          </span>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th class="ci-th">ID</th>
+              <th class="ci-th">Name</th>
+              <th class="ci-th">Project</th>
+              <th class="ci-th">Risk</th>
+              <th class="ci-th">Score</th>
+              <th class="ci-th">Blast Radius</th>
+              <th class="ci-th">Confidence</th>
+              <th class="ci-th">By</th>
+              <th class="ci-th">Created</th>
+              <th class="ci-th" style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in analyses %}
+            <tr class="ci-row-hover">
+              <td class="ci-td">
+                <span class="mono" style="font-size:11px;color:var(--blue);font-weight:600;">{{ a.analysis_id }}</span>
+              </td>
+              <td class="ci-td" style="max-width:200px;">
+                <span style="font-weight:500;color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">{{ a.name }}</span>
+              </td>
+              <td class="ci-td ci-text-2" style="font-size:12px;">{{ a.project.name|default:"—" }}</td>
+              <td class="ci-td">
+                {% if a.risk == "High" %}
+                  <span class="ci-badge badge-red" style="font-size:9px;">HIGH</span>
+                {% elif a.risk == "Medium" %}
+                  <span class="ci-badge badge-amber" style="font-size:9px;">MED</span>
+                {% else %}
+                  <span class="ci-badge badge-green" style="font-size:9px;">LOW</span>
+                {% endif %}
+              </td>
+              <td class="ci-td mono" style="font-size:12px;color:var(--text-2);">{{ a.risk_score }}</td>
+              <td class="ci-td mono" style="font-size:12px;color:var(--text-2);">{{ a.blast_radius }}/100</td>
+              <td class="ci-td mono" style="font-size:12px;color:var(--green);">{{ a.confidence }}%</td>
+              <td class="ci-td ci-text-2" style="font-size:12px;">{{ a.created_by.username|default:"—" }}</td>
+              <td class="ci-td mono ci-text-3" style="font-size:11px;">{{ a.created_at|date:"M d, Y" }}</td>
+              <td class="ci-td" style="text-align:right;">
+                <form method="post" style="margin:0;" onsubmit="return confirm('Delete analysis {{ a.analysis_id }}?');">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete_analysis">
+                  <input type="hidden" name="analysis_id" value="{{ a.pk }}">
+                  <button type="submit" class="ci-btn ci-btn-danger" style="height:26px;padding:0 8px;font-size:10px;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="10" class="ci-td" style="text-align:center;padding:32px;color:var(--text-3);">No analyses recorded yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>{# /ci-page-inner-wide #}
+</div>{# /ci-page #}
+
+<script>
+function switchTab(name, btn) {
+  // hide all tab panes
+  ['users','projects','analyses'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.style.display = 'none';
+  });
+  // deactivate all tab buttons
+  document.querySelectorAll('#admin-tabs .ci-tab').forEach(b => b.classList.remove('active'));
+  // show chosen
+  const pane = document.getElementById('tab-' + name);
+  if (pane) pane.style.display = 'block';
+  if (btn)  btn.classList.add('active');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Change Impact Report{% endblock %}
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner" style="display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header anim-fade-up">
+    <div><div class="ci-page-eyebrow">Analyze Change · ecommerce-backend @ main</div><h1 class="ci-page-title">CHANGE IMPACT REPORT</h1><p class="ci-page-sub">Impact evidence from the current project relationship model. No project files were modified.</p></div>
+    <div class="ci-page-actions">
+      <a href="/impact-graph/?tab=impact" class="ci-btn ci-btn-primary">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/></svg>
+        OPEN IMPACT GRAPH
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div style="display:grid;gap:16px;" class="md:grid-cols-2">
+    {# 1 API Impact #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">1 · API Impact</span><span class="ci-badge badge-gray">1 new · 1 modified · 0 removed</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div class="ci-stat"><span class="ci-stat-label">New</span><div class="ci-stat-value" style="color:var(--green);">1</div></div>
+          <div class="ci-stat"><span class="ci-stat-label">Modified</span><div class="ci-stat-value" style="color:var(--amber);">1</div></div>
+          <div class="ci-stat"><span class="ci-stat-label">Removed</span><div class="ci-stat-value">0</div></div>
+        </div>
+        {% for node in api_nodes %}
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div style="min-width:0;flex:1;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:12px;font-weight:600;">{{ node.name }}</span><span class="ci-badge badge-gray">{{ node.status|upper }}</span></div>
+            <p style="font-size:11px;color:var(--text-2);line-height:1.625;margin:2px 0 0;">{{ node.why }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        <p style="font-size:10.5px;color:var(--text-3);margin:0;">No API removals are identified in the current change model.</p>
+      </div>
+    </div>
+
+    {# 2 Dependencies #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">2 · Dependencies</span><span class="ci-badge badge-gray">{{ new_deps|length }} added · {{ updated_deps|length }} updated · {{ removed_deps|length }} removed</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+        {% for d in new_deps %}<div style="display:flex;align-items:flex-start;gap:10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;">{{ d.name }}</span><span class="ci-badge badge-green">ADDED</span></div><p style="font-size:11px;color:var(--text-2);margin:2px 0 0;">Introduces the OAuth client integration required by the new Google identity provider.</p></div></div>{% endfor %}
+        {% for d in updated_deps %}<div style="display:flex;align-items:flex-start;gap:10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;">{{ d.name }} {{ d.before }} → {{ d.after }}</span><span class="ci-badge badge-amber">UPDATED</span></div><p style="font-size:11px;color:var(--text-2);margin:2px 0 0;">Dependency comparison records a version change alongside the user-model and migration updates.</p></div></div>{% endfor %}
+        {% for d in removed_deps %}<div style="display:flex;align-items:flex-start;gap:10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;">{{ d.name }}</span><span class="ci-badge badge-red">REMOVED</span></div><p style="font-size:11px;color:var(--text-2);margin:2px 0 0;">Removed from the proposed dependency manifest; it is not present in the compare branch.</p></div></div>{% endfor %}
+      </div>
+    </div>
+
+    {# 3 Environment #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">3 · Environment</span><span class="ci-badge badge-gray">2 new · 0 modified · 0 removed</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+        {% for env in env_vars_impact %}<div style="display:flex;align-items:flex-start;gap:10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;">{{ env.name }}</span><span class="ci-badge badge-green">NEW</span></div><p style="font-size:11px;color:var(--text-2);margin:2px 0 0;">{{ env.desc }}</p></div></div>{% endfor %}
+      </div>
+    </div>
+
+    {# 4 Security #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">4 · Security Impact</span><span class="ci-badge badge-gray">{{ security_impact|length }} affected areas</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+        {% for s in security_impact %}<div style="display:flex;align-items:flex-start;gap:10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;">{{ s.title }}</span><span class="ci-badge {{ s.severity|severity_badge_class }}">{{ s.severity|upper }}</span></div><p style="font-size:11px;color:var(--text-2);margin:2px 0 0;">{{ s.why }}</p></div></div>{% endfor %}
+      </div>
+    </div>
+
+    {# 5 Database #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">5 · Database Impact</span><span class="ci-badge badge-gray">AFFECTED</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+        {% for item in db_impact %}<div style="display:flex;align-items:flex-start;gap:10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div>{% if item.tag %}<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;">{{ item.title }}</span><span class="ci-badge badge-gray">{{ item.tag }}</span></div>{% else %}<span style="font-size:12px;font-weight:600;">{{ item.title }}</span>{% endif %}<p style="font-size:11px;color:var(--text-2);margin:2px 0 0;">{{ item.detail }}</p></div></div>{% endfor %}
+      </div>
+    </div>
+
+    {# 6 Risk Score #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">6 · Risk Score</span><span class="ci-badge badge-gray">{{ project.risk }}/100 · HIGH</span></div></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+        {% for f in risk_factors %}
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;"><span style="font-size:11px;" title="{{ f.detail }}">{{ f.name }}</span><span class="mono ci-text-2" style="font-size:10px;">{{ f.value }}</span></div>
+          <div style="height:4px;border-radius:9999px;overflow:hidden;background:var(--panel-3);"><div style="height:100%;border-radius:9999px;width:{{ f.value }}%;background:{% if f.value >= 80 %}var(--red){% elif f.value >= 60 %}var(--amber){% else %}var(--blue){% endif %};"></div></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

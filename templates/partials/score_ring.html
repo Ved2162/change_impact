@@ -1,0 +1,16 @@
+<div class="ci-score-ring-wrap">
+  <svg width="{{ size }}" height="{{ size }}" viewBox="0 0 {{ size }} {{ size }}">
+    {% with half=size|add:0 %}
+    <circle cx="{{ half }}" cy="{{ half }}" r="{{ r }}" fill="none" stroke="var(--panel-3)" stroke-width="7"/>
+    <circle cx="{{ half }}" cy="{{ half }}" r="{{ r }}" fill="none" stroke="{{ tone }}" stroke-width="7"
+      stroke-linecap="round"
+      stroke-dasharray="{{ circ|floatformat:2 }}"
+      stroke-dashoffset="{{ offset|floatformat:2 }}"
+      style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1.2s cubic-bezier(.22,.9,.3,1);"/>
+    <text x="50%" y="47%" text-anchor="middle" dominant-baseline="middle"
+      font-size="{% widthratio size 1 0.2 %}" font-weight="700" font-family="JetBrains Mono,monospace" fill="{{ tone }}">{{ value }}</text>
+    <text x="50%" y="62%" text-anchor="middle" font-size="9.5" font-family="JetBrains Mono,monospace" fill="var(--text-3)">/ 100</text>
+    {% endwith %}
+  </svg>
+  <span class="ci-score-ring-label">{{ label }}</span>
+</div>

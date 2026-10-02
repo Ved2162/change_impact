@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}What-If Simulation{% endblock %}
+{% block content %}
+<div style="height:100%;display:flex;flex-direction:column;">
+  <div style="padding:16px 20px 12px;flex-shrink:0;">
+    <div class="ci-page-header">
+      <div class="anim-fade-up">
+        <div class="ci-page-eyebrow">Simulation · no writes to the project</div>
+        <h1 class="ci-page-title">WHAT-IF CHANGE SIMULATION</h1>
+        <p class="ci-page-sub">{{ project.change }}</p>
+      </div>
+      <div class="ci-page-actions">
+        <button id="ci-whatif-replay" class="ci-btn ci-btn-ghost">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+          REPLAY
+        </button>
+        <a href="/impact-analysis/" class="ci-btn ci-btn-primary">
+          RUN FULL IMPACT ANALYSIS
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="ci-alert-amber" style="margin:0 20px 12px;flex-shrink:0;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span style="font-size:12px;font-weight:500;color:var(--amber);">Simulation only — the original project has not been modified.</span>
+    <span class="mono" style="font-size:9.5px;margin-left:auto;color:var(--amber);">SANDBOX #SIM-0417 · DIFF AGAINST main@8f42ac1</span>
+  </div>
+  <div style="flex:1;min-height:0;padding:0 20px 20px;display:grid;gap:16px;" class="lg:grid-cols-2">
+    <div class="ci-sim-panel">
+      <div class="ci-sim-panel-header">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+        <span class="mono" style="font-size:11px;font-weight:700;letter-spacing:.14em;">CURRENT</span>
+        <span class="ci-badge badge-gray">BASELINE</span>
+        <span class="ci-text-3" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:4px;">Login issues JWT through the existing chain.</span>
+      </div>
+      <div id="ci-sim-current-canvas" style="flex:1;min-height:320px;"></div>
+    </div>
+    <div class="ci-sim-panel" style="border-color:color-mix(in srgb,var(--amber) 30%,transparent);">
+      <div class="ci-sim-panel-header">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+        <span class="mono" style="font-size:11px;font-weight:700;letter-spacing:.14em;">SIMULATED</span>
+        <span class="ci-badge" style="color:var(--amber);background:var(--panel-3);border-color:var(--border-2);">PROPOSED</span>
+        <span class="ci-text-3" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:4px;">Google OAuth joins Authentication; JWT and the OAuth flow converge at Middleware.</span>
+      </div>
+      <div id="ci-sim-proposed-canvas" style="flex:1;min-height:320px;"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  const simCurrent  = {{ sim_current_json|safe }};
+  const simProposed = {{ sim_proposed_json|safe }};
+  const gcCur = new GraphCanvas(document.getElementById('ci-sim-current-canvas'), simCurrent,  { accent:'default', editable:false, graphKey:'sim-current' });
+  const gcSim = new GraphCanvas(document.getElementById('ci-sim-proposed-canvas'), simProposed, { accent:'sim', editable:false, animateIntro:true, graphKey:'sim-proposed', legendHint:'SIMULATED DELTA' });
+  window.CI_graphCanvases = { 'sim-current': gcCur, 'sim-proposed': gcSim };
+</script>
+{% endblock %}

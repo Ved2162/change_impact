@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner" style="display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header anim-fade-up">
+    <div>
+      <div class="ci-page-eyebrow">{{ project.name }} · {{ project.framework }}</div>
+      <h1 class="ci-page-title">PROJECT OVERVIEW</h1>
+      <p class="ci-page-sub">What Change Impact reconstructed from the codebase on branch main.</p>
+    </div>
+    <div class="ci-page-actions">
+      <a href="/current-flow/" class="ci-btn ci-btn-ghost">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        CURRENT FLOW
+      </a>
+      <a href="/analyze-change/" class="ci-btn ci-btn-primary">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        ANALYZE A CHANGE
+      </a>
+    </div>
+  </div>
+
+  {# stats grid #}
+  <div style="display:grid;gap:12px;grid-template-columns:repeat(2,1fr);" class="sm:grid-cols-4">
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">Files</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="ci-stat-value">{{ project.stats.files }}</div><div class="ci-stat-sub">18,204 LOC</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">Functions</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><div class="ci-stat-value">{{ project.stats.functions }}</div><div class="ci-stat-sub">58 classes</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">APIs</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="ci-stat-value" style="color:var(--blue);">{{ project.stats.apis }}</div><div class="ci-stat-sub">9 blueprints</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">DB Models</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div class="ci-stat-value" style="color:var(--amber);">{{ project.stats.dbModels }}</div><div class="ci-stat-sub">PostgreSQL 15</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">Dependencies</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><div class="ci-stat-value" style="color:var(--teal);">{{ project.stats.dependencies }}</div><div class="ci-stat-sub">3 advisories</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">Env Variables</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div><div class="ci-stat-value">{{ project.stats.envVars }}</div><div class="ci-stat-sub">1 optional missing</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">Tests</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg></div><div class="ci-stat-value" style="color:var(--green);">{{ project.stats.tests }}</div><div class="ci-stat-sub">pytest</div></div>
+    <div class="ci-stat"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="ci-stat-label">Security Findings</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ci-stat-value" style="color:var(--red);">{{ project.stats.securityFindings }}</div><div class="ci-stat-sub">2 high severity</div></div>
+  </div>
+
+  <div style="display:grid;gap:16px;" class="lg:grid-cols-1fr-360">
+    {# health panel #}
+    <div class="ci-panel">
+      <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">Project health</span><span class="ci-badge badge-green">78/100 OVERALL</span></div></div>
+      <div class="ci-panel-body">
+        <div style="display:grid;gap:16px 32px;" class="sm:grid-cols-2">
+          {% meter "Project Health" project.health.project %}
+          {% meter "Security" project.health.security %}
+          {% meter "Dependencies" project.health.dependencies %}
+          {% meter "Maintainability" project.health.maintainability %}
+          {% meter "Configuration" project.health.configuration %}
+        </div>
+        <hr class="ci-divider" style="margin:16px 0;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="mono ci-text-3" style="font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;margin-right:4px;">Stack</span>
+          {% for tech in stack_tags %}<span class="ci-badge badge-gray mono" style="font-weight:400;font-size:10px;">{{ tech }}</span>{% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {# recent analyses #}
+    <div class="ci-panel">
+      <div class="ci-panel-header">
+        <div class="ci-panel-header-left"><span class="ci-panel-title">Recent change analyses</span></div>
+        <a href="/history/" class="ci-btn ci-btn-ghost" style="height:24px;padding:0 10px;font-size:10.5px;">View all</a>
+      </div>
+      <div style="padding:8px;">
+        {% for h in history %}
+        <a href="/reports/" style="width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:5px;text-decoration:none;transition:background .12s;" class="ci-row-hover">
+          <span class="ci-badge {% if h.risk == 'High' %}badge-red{% elif h.risk == 'Medium' %}badge-amber{% else %}badge-green{% endif %}">{{ h.risk|upper }}</span>
+          <div style="min-width:0;flex:1;">
+            <div style="font-size:12.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-1);">{{ h.name }}</div>
+            <div class="mono ci-text-3" style="font-size:9.5px;display:flex;align-items:center;gap:8px;">
+              <span>{{ h.date }}</span><span>RISK {{ h.score }}/100</span>
+            </div>
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {# baseline strip #}
+  <div class="ci-panel" style="padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+    <span class="mono" style="font-size:10.5px;color:var(--text-2);">BASELINE: <b style="color:var(--text-1);">main @ 8f42ac1</b></span>
+    <span class="mono ci-text-3" style="font-size:10.5px;">·</span>
+    <span class="mono" style="font-size:10.5px;color:var(--text-2);">LAST ANALYSIS: TODAY 14:32 (2M AGO)</span>
+    <span class="mono ci-text-3" style="font-size:10.5px;">·</span>
+    <span class="mono" style="font-size:10.5px;color:var(--green);">● STRUCTURE UNCHANGED SINCE ANALYSIS</span>
+    <a href="/analysis/" class="ci-btn ci-btn-ghost" style="margin-left:auto;height:28px;padding:0 10px;font-size:10px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+      RE-RUN ANALYSIS
+    </a>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Analysis History{% endblock %}
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner" style="max-width:1000px;display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header anim-fade-up">
+    <div><div class="ci-page-eyebrow">ecommerce-backend · persisted analyses</div><h1 class="ci-page-title">ANALYSIS HISTORY</h1><p class="ci-page-sub">Every simulation is versioned. Reopen any report to compare its model against the current architecture.</p></div>
+  </div>
+  <div class="ci-panel">
+    <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">{{ history|length }} recorded analyses</span><span class="ci-badge badge-gray">ALL BRANCHES</span></div></div>
+    <div>
+      {% for h in history %}
+      <a href="/reports/" style="width:100%;display:flex;align-items:center;gap:16px;padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);text-decoration:none;" class="ci-row-hover">
+        <span class="ci-badge {% if h.risk == 'High' %}badge-red{% elif h.risk == 'Medium' %}badge-amber{% else %}badge-green{% endif %}" style="width:76px;justify-content:center;">{{ h.risk|upper }}</span>
+        <div style="min-width:0;flex:1;">
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <span style="font-size:13px;font-weight:600;color:var(--text-1);">{{ h.name }}</span>
+            <span class="mono ci-text-3" style="font-size:9.5px;">{{ h.id }}</span>
+          </div>
+          <div class="ci-text-3" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">{{ h.change }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px;font-family:'JetBrains Mono',monospace;font-size:10.5px;flex-shrink:0;">
+          <span style="text-align:right;"><span style="color:var(--text-3);display:block;font-size:8.5px;">RISK</span><b style="color:{% if h.risk == 'High' %}var(--red){% elif h.risk == 'Medium' %}var(--amber){% else %}var(--green){% endif %};">{{ h.score }}/100</b></span>
+          <span style="text-align:right;"><span style="color:var(--text-3);display:block;font-size:8.5px;">BLAST</span><b style="color:var(--blue);">{{ h.blast }}/100</b></span>
+          <span style="text-align:right;"><span style="color:var(--text-3);display:block;font-size:8.5px;">CONF</span><b style="color:var(--green);">{{ h.confidence }}%</b></span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text-3);width:110px;flex-shrink:0;">
+          <span style="display:flex;align-items:center;gap:4px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{{ h.date }}</span>
+          <span style="display:flex;align-items:center;gap:4px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>main</span>
+        </div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" style="flex-shrink:0;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

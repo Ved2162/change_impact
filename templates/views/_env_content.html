@@ -1,0 +1,18 @@
+{% load ci_tags %}
+<div style="max-width:1100px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header"><div><div class="ci-page-eyebrow">Project · configuration surface</div><h1 class="ci-page-title">ENVIRONMENT</h1><p class="ci-page-sub">11 variables detected. Secret values are never stored or displayed.</p></div></div>
+  <div class="ci-alert-amber"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;"><path d="M17.73 12l-4-6.92a2 2 0 0 0-3.46 0l-4 6.92A2 2 0 0 0 8 15h8a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span style="font-size:12px;color:var(--amber);">Values are masked by policy. Change Impact reads variable names and usage only.</span></div>
+  <div class="ci-panel">
+    <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">{{ env_vars|length }} of 11 variables</span></div></div>
+    <table><thead><tr><th class="ci-th">Variable</th><th class="ci-th">Value</th><th class="ci-th">Used by</th><th class="ci-th">Required</th><th class="ci-th">Rotated</th><th class="ci-th">Status</th></tr></thead>
+    <tbody>{% for v in env_vars %}<tr class="ci-row-hover">
+      <td class="ci-td mono" style="font-weight:600;font-size:12px;color:var(--teal);">{{ v.name }}</td>
+      <td class="ci-td mono ci-text-3" style="letter-spacing:.2em;">••••••••••</td>
+      <td class="ci-td mono ci-text-2" style="font-size:10.5px;">{{ v.usedBy }}</td>
+      <td class="ci-td">{% if v.required %}<span style="font-size:11px;color:var(--text-2);">Yes</span>{% else %}<span class="ci-text-3" style="font-size:11px;">Optional</span>{% endif %}</td>
+      <td class="ci-td mono ci-text-3" style="font-size:10.5px;"><span style="display:flex;align-items:center;gap:6px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>{{ v.rotated }}</span></td>
+      <td class="ci-td">{% if v.status == 'set' %}<span class="ci-badge badge-green"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SET</span>{% else %}<span class="ci-badge badge-amber"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> MISSING</span>{% endif %}</td>
+    </tr>{% endfor %}</tbody></table>
+  </div>
+  <div class="ci-info-box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span style="font-size:11.5px;color:var(--text-2);line-height:1.625;">The proposed Google Login change introduces <span class="mono" style="color:var(--teal);">GOOGLE_CLIENT_ID</span> and <span class="mono" style="color:var(--teal);">GOOGLE_CLIENT_SECRET</span> — see Impact Analysis for configuration risk.</span></div>
+</div>

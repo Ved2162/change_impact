@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Current Flow{% endblock %}
+{% block content %}
+<div style="height:100%;display:flex;flex-direction:column;">
+  <div style="padding:16px 20px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;flex-shrink:0;">
+    <div class="anim-fade-up">
+      <div class="mono ci-text-3" style="font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;">Architecture Map · main @ 8f42ac1</div>
+      <h1 class="mono" style="font-size:17px;font-weight:700;letter-spacing:-.01em;margin:0;">CURRENT PROJECT FLOW</h1>
+      <p class="ci-text-2" style="font-size:12px;margin-top:2px;display:flex;align-items:center;gap:6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        How does my project work right now?
+      </p>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;" class="anim-fade-up">
+      {% for pill in type_pills %}
+      <span class="ci-panel" style="padding:0 8px;height:24px;display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text-2);">
+        <span style="color:{{ pill.color }};">{{ pill.icon|safe }}</span>{{ pill.label }}
+      </span>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="flex:1;min-height:0;padding:0 20px 20px;">
+    <div id="ci-current-flow-canvas" class="ci-panel" style="height:100%;width:100%;"></div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  const data = {{ graph_data_json|safe }};
+  const gc = new GraphCanvas(document.getElementById('ci-current-flow-canvas'), data, {
+    accent: 'default', editable: true, graphKey: 'current-flow'
+  });
+  window.CI_graphCanvases = window.CI_graphCanvases || {};
+  window.CI_graphCanvases['current-flow'] = gc;
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Impact Graph{% endblock %}
+{% block content %}
+<div style="height:100%;display:flex;flex-direction:column;">
+  <div style="padding:16px 20px 0;flex-shrink:0;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:12px;">
+      <div class="anim-fade-up">
+        <div class="mono ci-text-3" style="font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;">Manual graph modeling enabled</div>
+        <h1 class="mono" style="font-size:17px;font-weight:700;letter-spacing:-.01em;margin:0;">INTERACTIVE GRAPH EXPLORER</h1>
+        <p class="ci-text-2" style="font-size:12px;margin-top:2px;">Modify the visualization manually — add, connect, rename and restructure nodes on any map.</p>
+      </div>
+    </div>
+    {# tabs + filters #}
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);">
+      <div style="display:flex;">
+        <button class="ci-graph-tab-btn ci-tab{% if initial_tab == 'current' %} active{% endif %}" data-tab="current">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{% if initial_tab == 'current' %}var(--blue){% else %}var(--text-3){% endif %}" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>CURRENT FLOW
+        </button>
+        <button class="ci-graph-tab-btn ci-tab{% if initial_tab == 'impact' %} active{% endif %}" data-tab="impact">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{% if initial_tab == 'impact' %}var(--blue){% else %}var(--text-3){% endif %}" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>IMPACT FLOW
+        </button>
+        <button class="ci-graph-tab-btn ci-tab{% if initial_tab == 'diff' %} active{% endif %}" data-tab="diff">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{% if initial_tab == 'diff' %}var(--blue){% else %}var(--text-3){% endif %}" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>BEFORE / AFTER
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-bottom:8px;flex-wrap:wrap;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" style="margin-right:2px;"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/></svg>
+        {% for f in filters %}<button class="ci-filter-chip ci-chip{% if f.id == 'all' %} active{% endif %}" data-type="{{ f.id }}" style="height:24px;padding:0 8px;font-size:10px;font-family:'JetBrains Mono',monospace;">
+          {% if f.id == 'security' %}<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>{% endif %}{{ f.label }}
+        </button>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:1;min-height:0;padding:16px 20px;">
+    <div class="ci-graph-panel" data-tab="current" style="height:100%;{% if initial_tab != 'current' %}display:none;{% endif %}">
+      <div id="ci-graph-current" class="ci-panel" style="height:100%;width:100%;"></div>
+    </div>
+    <div class="ci-graph-panel" data-tab="impact" style="height:100%;{% if initial_tab != 'impact' %}display:none;{% endif %}">
+      <div id="ci-graph-impact" class="ci-panel" style="height:100%;width:100%;"></div>
+    </div>
+    <div class="ci-graph-panel lg:grid-cols-2" data-tab="diff" style="height:100%;display:grid;gap:16px;{% if initial_tab != 'diff' %}display:none;{% endif %}">
+      <div class="ci-sim-panel">
+        <div class="ci-sim-panel-header">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          <span class="mono" style="font-size:11px;font-weight:700;letter-spacing:.14em;">BEFORE</span>
+          <span class="ci-badge badge-gray">CURRENT</span>
+          <span class="mono ci-text-3" style="font-size:9.5px;margin-left:auto;">MAIN @ 8F42AC1</span>
+        </div>
+        <div id="ci-graph-before" style="flex:1;"></div>
+      </div>
+      <div class="ci-sim-panel" style="border-color:color-mix(in srgb,var(--green) 25%,transparent);">
+        <div class="ci-sim-panel-header" style="border-color:transparent;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          <span class="mono" style="font-size:11px;font-weight:700;letter-spacing:.14em;">AFTER</span>
+          <span class="ci-badge badge-green">PROPOSED</span>
+          <span class="mono ci-text-3" style="font-size:9.5px;margin-left:auto;">SIMULATED ON FEATURE/GOOGLE-OAUTH</span>
+        </div>
+        <div id="ci-graph-after" style="flex:1;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  const currentFlow  = {{ current_flow_json|safe }};
+  const impactFlow   = {{ impact_flow_json|safe }};
+  const beforeGraph  = {{ before_graph_json|safe }};
+  const afterGraph   = {{ after_graph_json|safe }};
+
+  const gcCurrent = new GraphCanvas(document.getElementById('ci-graph-current'), currentFlow, { accent:'default', editable:true, graphKey:'explorer-current' });
+  const gcImpact  = new GraphCanvas(document.getElementById('ci-graph-impact'),  impactFlow,  { accent:'impact',  editable:true, graphKey:'explorer-impact' });
+  const gcBefore  = new GraphCanvas(document.getElementById('ci-graph-before'),  beforeGraph, { accent:'diff', editable:false, graphKey:'explorer-before' });
+  const gcAfter   = new GraphCanvas(document.getElementById('ci-graph-after'),   afterGraph,  { accent:'diff', editable:true,  graphKey:'explorer-after', legendHint:'EDITABLE MODEL' });
+
+  window.CI_graphCanvases = { 'explorer-current': gcCurrent, 'explorer-impact': gcImpact, 'explorer-before': gcBefore, 'explorer-after': gcAfter };
+
+  // tab switching
+  document.querySelectorAll('.ci-graph-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ci-graph-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.ci-graph-panel').forEach(p => {
+        p.style.display = p.dataset.tab === tab ? (tab === 'diff' ? 'grid' : '') : 'none';
+      });
+      // trigger fit after visibility change
+      setTimeout(() => {
+        if (tab==='current') gcCurrent.fitView();
+        if (tab==='impact')  gcImpact.fitView();
+        if (tab==='diff')    { gcBefore.fitView(); gcAfter.fitView(); }
+      }, 50);
+    });
+  });
+</script>
+{% endblock %}

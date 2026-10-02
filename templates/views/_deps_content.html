@@ -1,0 +1,15 @@
+{% load ci_tags %}
+<div style="max-width:1100px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:20px;">
+  <div class="ci-page-header"><div><div class="ci-page-eyebrow">Project · requirements.txt</div><h1 class="ci-page-title">DEPENDENCIES</h1><p class="ci-page-sub">34 packages resolved from the lockfile with health evaluation.</p></div></div>
+  <div class="ci-panel">
+    <div class="ci-panel-header"><div class="ci-panel-header-left"><span class="ci-panel-title">Showing {{ dependencies|length }} of 34 direct dependencies</span><span class="ci-badge badge-amber">1 SECURITY RISK</span></div></div>
+    <table><thead><tr><th class="ci-th">Package</th><th class="ci-th">Version</th><th class="ci-th">License</th><th class="ci-th">Used by</th><th class="ci-th">Status</th></tr></thead>
+    <tbody>{% for d in dependencies %}<tr class="ci-row-hover">
+      <td class="ci-td mono" style="font-weight:600;font-size:12.5px;">{{ d.name }}</td>
+      <td class="ci-td mono ci-text-2">{{ d.version }}</td>
+      <td class="ci-td mono ci-text-3" style="font-size:10.5px;">{{ d.license }}</td>
+      <td class="ci-td mono ci-text-2">{{ d.usedBy }} modules</td>
+      <td class="ci-td"><span class="ci-badge {% if d.status == 'Healthy' %}badge-green{% elif d.status == 'Update Recommended' %}badge-blue{% elif d.status == 'Security Risk' %}badge-red{% else %}badge-amber{% endif %}">{{ d.status }}</span></td>
+    </tr>{% endfor %}</tbody></table>
+  </div>
+</div>

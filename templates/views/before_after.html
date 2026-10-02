@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Before vs After{% endblock %}
+{% block content %}
+<div class="ci-page">
+<div class="ci-page-inner-wide" style="display:flex;flex-direction:column;gap:24px;">
+  <div class="ci-page-header anim-fade-up">
+    <div><div class="ci-page-eyebrow">Comparison · main vs simulated Google Login</div><h1 class="ci-page-title">BEFORE VS AFTER</h1><p class="ci-page-sub">Architecture comparison of the current system against the proposed change.</p></div>
+    <div class="ci-panel" style="padding:6px 12px;display:flex;align-items:center;gap:14px;">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--text-2);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Added</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--text-2);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg> Removed</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--text-2);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modified</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--text-2);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Potentially affected</span>
+    </div>
+  </div>
+
+  {# graph comparison #}
+  <div style="display:grid;gap:16px;height:560px;" class="lg:grid-cols-2">
+    <div class="ci-panel" style="overflow:hidden;display:flex;flex-direction:column;min-height:0;">
+      <div style="padding:0 16px;height:44px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        <span class="mono" style="font-size:11px;font-weight:700;letter-spacing:.14em;">BEFORE</span><span class="ci-badge badge-gray">CURRENT</span>
+        <span class="mono ci-text-3" style="font-size:9.5px;margin-left:auto;">LOGIN → JWT → MIDDLEWARE → APIS → DATABASE</span>
+      </div>
+      <div id="ci-ba-before" style="flex:1;"></div>
+    </div>
+    <div class="ci-panel" style="overflow:hidden;display:flex;flex-direction:column;min-height:0;border-color:color-mix(in srgb,var(--green) 25%,transparent);">
+      <div style="padding:0 16px;height:44px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        <span class="mono" style="font-size:11px;font-weight:700;letter-spacing:.14em;">AFTER</span><span class="ci-badge badge-green">PROPOSED</span>
+        <span class="mono ci-text-3" style="font-size:9.5px;margin-left:auto;">JWT + OAUTH CONVERGE AT MIDDLEWARE</span>
+      </div>
+      <div id="ci-ba-after" style="flex:1;"></div>
+    </div>
+  </div>
+
+  {# summary chips #}
+  <div style="display:grid;gap:12px;grid-template-columns:repeat(2,1fr);" class="sm:grid-cols-4">
+    {% for c in change_summary %}
+    <div class="ci-panel ci-panel-hover" style="padding:14px 16px;">
+      <div class="mono" style="font-size:22px;font-weight:700;color:{{ c.color }};">{{ c.n }}</div>
+      <div style="font-size:11.5px;font-weight:600;margin-top:2px;">{{ c.label }}</div>
+      <div class="ci-text-3" style="font-size:10.5px;margin-top:2px;line-height:1.375;">{{ c.desc }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {# dep comparison table #}
+  <div class="ci-panel">
+    <div class="ci-panel-header">
+      <div class="ci-panel-header-left"><span class="ci-panel-title">DEPENDENCY BEFORE VS AFTER</span><span class="ci-badge badge-amber">COMPATIBILITY REVIEW ADVISED</span></div>
+      <span class="mono ci-text-3" style="font-size:9px;">requirements.txt DIFF</span>
+    </div>
+    <table><thead><tr><th class="ci-th">Package</th><th class="ci-th">Before</th><th class="ci-th">Proposed</th><th class="ci-th">Change</th><th class="ci-th">Note</th></tr></thead>
+    <tbody>{% for d in dep_compare %}
+    <tr class="ci-row-hover">
+      <td class="ci-td mono" style="font-weight:600;font-size:12.5px;">{{ d.name }}</td>
+      <td class="ci-td mono ci-text-2">{{ d.before }}</td>
+      <td class="ci-td mono" style="color:{% if d.status == 'No Change' %}var(--text-2){% elif d.status == 'Added' %}var(--green){% elif d.status == 'Removed' %}var(--red){% else %}var(--amber){% endif %};">{{ d.after }}</td>
+      <td class="ci-td"><span class="ci-badge {{ d.status|dep_badge_class }}" style="{% if d.status == 'Removed' %}text-decoration:line-through;{% endif %}">{{ d.status }}</span></td>
+      <td class="ci-td" style="font-size:11px;color:var(--text-3);">
+        {% if d.status == 'Added' %}<span style="display:flex;align-items:center;gap:6px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> OAuth client — no conflicts with PyJWT</span>
+        {% elif d.status == 'Removed' %}<span style="display:flex;align-items:center;gap:6px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Dead dependency — safe to drop</span>
+        {% elif d.status == 'Version Change' %}<span style="display:flex;align-items:center;gap:6px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> Patch bump — re-run ORM tests</span>
+        {% else %}—{% endif %}
+      </td>
+    </tr>{% endfor %}</tbody></table>
+  </div>
+</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  const beforeGraph = {{ before_graph_json|safe }};
+  const afterGraph  = {{ after_graph_json|safe }};
+  const gcBefore = new GraphCanvas(document.getElementById('ci-ba-before'), beforeGraph, { accent:'diff', editable:false, graphKey:'ba-before' });
+  const gcAfter  = new GraphCanvas(document.getElementById('ci-ba-after'),  afterGraph,  { accent:'diff', editable:false, animateIntro:true, graphKey:'ba-after' });
+  window.CI_graphCanvases = { 'ba-before': gcBefore, 'ba-after': gcAfter };
+</script>
+{% endblock %}

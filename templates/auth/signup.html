@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up – CHANGEIMPACT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <style>
+    html, body { height: 100%; }
+    .ci-auth-page { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 32px; background: var(--bg-0); }
+  </style>
+</head>
+<body class="ci-auth-body ci-entry-loading">
+<div class="ci-loader" id="ci-global-loader" role="status" aria-live="polite">
+  <div class="ci-loader-inner">
+    <div class="ci-loader-stage">
+      <div class="ci-loader-orbit ring-3"></div>
+      <div class="ci-loader-orbit ring-1"></div>
+      <div class="ci-loader-orbit ring-2"></div>
+      <div class="ci-loader-icon-box">
+        <svg class="ci-loader-logo" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+          <circle class="node-1" cx="12" cy="5" r="2"/>
+          <circle class="node-2" cx="5" cy="19" r="2"/>
+          <circle class="node-3" cx="19" cy="19" r="2"/>
+          <line class="edge" x1="12" y1="7" x2="5" y2="17"/>
+          <line class="edge" x1="12" y1="7" x2="19" y2="17"/>
+        </svg>
+      </div>
+    </div>
+    <div class="ci-loader-brand">
+      <div class="ci-loader-brand-name">
+        <b>C</b><b>H</b><b>A</b><b>N</b><b>G</b><b>E</b><span><b>I</b><b>M</b><b>P</b><b>A</b><b>C</b><b>T</b></span>
+      </div>
+      <div class="ci-loader-brand-sub">Analysis Workspace</div>
+    </div>
+    <div class="ci-loader-progress"></div>
+    <div class="ci-loader-status" id="ci-loader-status"></div>
+  </div>
+</div>
+<div class="ci-auth-page">
+  <div class="ci-auth-card">
+    <div class="ci-auth-logo" data-ci-auth-logo>
+      <span style="width:32px;height:32px;border-radius:8px;background:var(--blue-dim);border:1px solid color-mix(in srgb,var(--blue) 35%,transparent);display:grid;place-items:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+          <circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+          <line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/>
+        </svg>
+      </span>
+      <span>
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--text-1);">CHANGE<span style="color:var(--blue);">IMPACT</span></span>
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;color:var(--text-3);">ANALYSIS WORKSPACE</span>
+      </span>
+    </div>
+
+    <h1 class="ci-auth-title">Create account</h1>
+    <p class="ci-auth-sub">Set up your Change Impact workspace account.</p>
+
+    {% if error %}
+    <div class="ci-auth-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" class="ci-auth-form">
+      {% csrf_token %}
+      <div>
+        <label class="ci-label">Username</label>
+        <input type="text" name="username" class="ci-input" placeholder="your.username" autofocus required>
+      </div>
+      <div>
+        <label class="ci-label">Email</label>
+        <input type="email" name="email" class="ci-input" placeholder="you@company.dev">
+      </div>
+      <div>
+        <label class="ci-label">Password</label>
+        <input type="password" name="password" class="ci-input" placeholder="••••••••••" required>
+      </div>
+      <button type="submit" class="ci-btn ci-btn-primary" style="height:38px;justify-content:center;">
+        CREATE ACCOUNT
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </form>
+
+    <p style="margin-top:20px;font-size:12px;color:var(--text-3);text-align:center;">
+      Already have an account? <a href="/login/" class="ci-auth-link">Sign in</a>
+    </p>
+  </div>
+</div>
+<script>
+  const t = localStorage.getItem("ci-theme") || "dark";
+  document.documentElement.dataset.theme = t;
+</script>
+<script src="{% static 'js/auth_transitions.js' %}"></script>
+</body>
+</html>

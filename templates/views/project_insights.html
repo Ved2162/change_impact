@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static ci_tags %}
+{% block title %}Project Insights{% endblock %}
+{% block content %}
+<div style="height:100%;display:flex;flex-direction:column;">
+  <div style="padding:16px 20px 0;flex-shrink:0;">
+    <div style="padding-bottom:12px;">
+      <div class="mono ci-text-3" style="font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;">Project health</div>
+      <h1 class="mono" style="font-size:17px;font-weight:700;margin:0;">PROJECT INSIGHTS</h1>
+    </div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);">
+      <div style="display:flex;" role="tablist">
+        <button role="tab" class="ci-insight-tab ci-tab active" data-tab="dependencies">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Dependencies
+        </button>
+        <button role="tab" class="ci-insight-tab ci-tab" data-tab="security">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Security
+        </button>
+        <button role="tab" class="ci-insight-tab ci-tab" data-tab="environment">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          Environment
+        </button>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;min-height:0;overflow-y:auto;">
+    <div id="ci-insight-dependencies" class="ci-insight-panel">{% include "views/_deps_content.html" %}</div>
+    <div id="ci-insight-security" class="ci-insight-panel" style="display:none;">{% include "views/_security_content.html" %}</div>
+    <div id="ci-insight-environment" class="ci-insight-panel" style="display:none;">{% include "views/_env_content.html" %}</div>
+  </div>
+</div>
+{% endblock %}
